@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>선착순 뽑기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ───────────── 입장 화면 ───────────── -->
+  <div id="screen-login" class="screen active">
+    <div class="card">
+      <h1>🎯 선착순 뽑기</h1>
+      <p class="subtitle">이름을 입력하고 입장하세요</p>
+      <input
+        id="input-name"
+        type="text"
+        maxlength="20"
+        placeholder="이름 입력 (교사는 TEACHER1234)"
+        autocomplete="off"
+        autofocus
+      />
+      <button id="btn-enter" class="btn-primary">입장하기</button>
+      <p id="login-error" class="error-msg hidden"></p>
+    </div>
+  </div>
+
+  <!-- ───────────── 학생 대기 화면 ───────────── -->
+  <div id="screen-student-wait" class="screen">
+    <div class="card">
+      <h2>⏳ 대기 중</h2>
+      <p id="wait-name" class="big-name"></p>
+      <p class="subtitle">선생님이 게임을 시작하면 원이 나타납니다!</p>
+      <div id="wait-student-list" class="student-list"></div>
+    </div>
+  </div>
+
+  <!-- ───────────── 교사 대기 화면 ───────────── -->
+  <div id="screen-teacher" class="screen">
+    <div class="teacher-panel">
+      <h2>👩‍🏫 교사 제어판</h2>
+
+      <div class="control-row">
+        <label>뽑을 인원 수</label>
+        <div class="count-control">
+          <button id="btn-count-minus" class="btn-count">−</button>
+          <span id="circle-count">5</span>
+          <button id="btn-count-plus" class="btn-count">+</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary btn-large">🚀 게임 시작</button>
+      <button id="btn-reset" class="btn-secondary hidden">🔄 다시 시작</button>
+
+      <div class="teacher-students">
+        <h3>대기 중인 학생 (<span id="teacher-student-count">0</span>명)</h3>
+        <div id="teacher-student-list" class="student-list"></div>
+      </div>
+
+      <div id="teacher-winners" class="winners-box hidden">
+        <h3>🏆 선정 결과</h3>
+        <div id="teacher-winner-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────── 게임 화면 (학생) ───────────── -->
+  <div id="screen-game" class="screen">
+    <div id="game-header">
+      <span id="game-name-tag"></span>
+      <span id="circles-left"></span>
+    </div>
+    <div id="circle-arena">
+      <!-- circles injected here -->
+    </div>
+    <div id="game-status-msg"></div>
+  </div>
+
+  <!-- ───────────── 결과 화면 (학생) ───────────── -->
+  <div id="screen-result" class="screen">
+    <div class="card result-card">
+      <h2 id="result-title">🎉 선착순 완료!</h2>
+      <div id="result-list"></div>
+      <p class="subtitle" style="margin-top:1.5rem;">선생님이 다시 시작하면 대기 화면으로 이동합니다.</p>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
