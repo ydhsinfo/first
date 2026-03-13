@@ -1,5 +1,5 @@
 /* ── Socket.io connection ── */
-const socket = io();
+const socket = io({ transports: ['polling', 'websocket'] });
 
 /* ── State ── */
 let myName = '';
@@ -16,6 +16,26 @@ function showScreen(id) {
   $(id).classList.add('active');
 }
 
+/* ── Socket connection status ── */
+socket.on('connect', () => {
+  $('btn-enter').disabled = false;
+  $('btn-enter').textContent = '입장하기';
+});
+
+socket.on('connect_error', () => {
+  $('btn-enter').disabled = true;
+  $('btn-enter').textContent = '서버 연결 중...';
+});
+
+socket.on('disconnect', () => {
+  $('btn-enter').disabled = true;
+  $('btn-enter').textContent = '재연결 중...';
+});
+
+// 초기 연결 전 버튼 비활성화
+$('btn-enter').disabled = true;
+$('btn-enter').textContent = '서버 연결 중...';
+
 /* ──────────────────────────────────────────────
    LOGIN SCREEN
 ────────────────────────────────────────────── */
@@ -27,6 +47,7 @@ $('input-name').addEventListener('keydown', e => {
 function handleEnter() {
   const val = $('input-name').value.trim();
   if (!val) return showError('이름을 입력해 주세요.');
+  if (!socket.connected) return showError('서버에 연결 중입니다. 잠시 후 다시 시도해 주세요.');
 
   if (val === 'TEACHER1234') {
     socket.emit('teacher_join', val);
