@@ -23,7 +23,7 @@ socket.on('connect', () => {
 
   // 재연결 시 자동으로 재입장 (이미 역할이 있는 경우)
   if (myRole === 'teacher') {
-    socket.emit('teacher_join', 'TEACHER1234');
+    socket.emit('teacher_join', '1234');
   } else if (myRole === 'student' && myName) {
     socket.emit('student_join', myName);
   }
@@ -56,7 +56,7 @@ function handleEnter() {
   if (!val) return showError('이름을 입력해 주세요.');
   if (!socket.connected) return showError('서버에 연결 중입니다. 잠시 후 다시 시도해 주세요.');
 
-  if (val === 'TEACHER1234') {
+  if (val === '1234') {
     socket.emit('teacher_join', val);
   } else {
     myName = val;

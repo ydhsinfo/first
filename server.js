@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
-const TEACHER_CODE = 'TEACHER1234';
+const TEACHER_CODE = '1234';
 
 // Game state
 let gameState = {
