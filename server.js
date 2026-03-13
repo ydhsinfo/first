@@ -19,6 +19,9 @@ let gameState = {
   students: {}         // socketId -> name
 };
 
+// Teacher socket IDs (rooms 방식 대신 Set으로 관리 — 재연결 시에도 안정적)
+const teacherSockets = new Set();
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 function resetGame() {
@@ -83,7 +86,7 @@ io.on('connection', (socket) => {
   // Teacher joins
   socket.on('teacher_join', (code) => {
     if (code === TEACHER_CODE) {
-      socket.join('teachers');
+      teacherSockets.add(socket.id);
       socket.emit('join_success', {
         role: 'teacher',
         status: gameState.status,
@@ -100,7 +103,7 @@ io.on('connection', (socket) => {
 
   // Teacher starts game
   socket.on('start_game', (count) => {
-    if (!socket.rooms.has('teachers')) return;
+    if (!teacherSockets.has(socket.id)) return;
     const n = Math.max(1, Math.min(20, parseInt(count) || 5));
 
     gameState.status = 'playing';
@@ -149,13 +152,14 @@ io.on('connection', (socket) => {
 
   // Teacher resets game
   socket.on('reset_game', () => {
-    if (!socket.rooms.has('teachers')) return;
+    if (!teacherSockets.has(socket.id)) return;
     resetGame();
     io.emit('game_reset');
     console.log('Game reset by teacher');
   });
 
   socket.on('disconnect', () => {
+    teacherSockets.delete(socket.id);
     if (gameState.students[socket.id]) {
       console.log(`Student disconnected: ${gameState.students[socket.id]}`);
       delete gameState.students[socket.id];

@@ -20,6 +20,13 @@ function showScreen(id) {
 socket.on('connect', () => {
   $('btn-enter').disabled = false;
   $('btn-enter').textContent = '입장하기';
+
+  // 재연결 시 자동으로 재입장 (이미 역할이 있는 경우)
+  if (myRole === 'teacher') {
+    socket.emit('teacher_join', 'TEACHER1234');
+  } else if (myRole === 'student' && myName) {
+    socket.emit('student_join', myName);
+  }
 });
 
 socket.on('connect_error', () => {
